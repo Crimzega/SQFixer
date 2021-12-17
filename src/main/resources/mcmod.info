@@ -1,0 +1,14 @@
+[{
+	"modid": "sqfider",
+	"name": "Spider Queen Fixer",
+	"description": "A fixup for the revived Spider Queen mod by djoslin.",
+	"version": "1.7.10-1.0",
+	"mcversion": "1.7.10",
+	"url": "",
+	"updateUrl": "",
+	"authorList": ["Crimzega"],
+	"credits": "djoslin, Pullahoko, pelindolok, lemonszz, many others",
+	"logoFile": "spider-queen-fixer.png",
+	"screenshots": [],
+	"dependencies": []
+}]
