@@ -11,11 +11,17 @@ import java.util.Scanner;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.sulvic.sqfixer.client.HumanCurrentSkinner;
+import com.sulvic.sqfixer.proxy.ServerSQF;
+
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityClientPlayerMP;
 import radixcore.util.RadixExcept;
 import sq.core.SpiderCore;
 import sq.core.minecraft.ModBlocks;
@@ -25,6 +31,8 @@ public class SpiderQueenFixer{
 	
 	@Instance(ReferenceSQF.MODID)
 	public static SpiderQueenFixer instance;
+	@SidedProxy(clientSide = ReferenceSQF.CLIENT, serverSide = ReferenceSQF.SERVER)
+	public static ServerSQF proxy;
 	private Logger logger;
 	
 	public SpiderQueenFixer(){
@@ -34,7 +42,12 @@ public class SpiderQueenFixer{
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent evt){
+		proxy.registerRenders();
 		SpiderCore.fakePlayerNames = downloadFakePlayerNames();
+		HumanCurrentSkinner.init();
+		EntityClientPlayerMP thePlayer = Minecraft.func_71410_x().field_71439_g;
+		SpiderCore.fakePlayerNames.add(thePlayer.func_70005_c_());
+		HumanCurrentSkinner.addPlayer(thePlayer);
 		logger.info("This should apply missing names from redirects. Name List: {}", Arrays.toString(SpiderCore.fakePlayerNames.toArray()));
 	}
 	
@@ -64,8 +77,8 @@ public class SpiderQueenFixer{
 		logger.info("Downloading contributor/volunteered player names with redirecting...");
 		List<String> returnList = new ArrayList<String>();
 		try{
-			readSkinsFromURL("http://pastebin.com/raw.php?i=MNWrUxwa", returnList);
-			readSkinsFromURL("http://pastebin.com/raw.php?i=L5S632xR", returnList);
+			readSkinsFromURL(SpiderCore.PERM_SKINS_URL, returnList);
+			readSkinsFromURL(SpiderCore.SKINS_URL, returnList);
 			logger.info("Contributor/volunteer player names downloaded successfully!");
 		}
 		catch(Throwable ex){
