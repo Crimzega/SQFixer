@@ -2,8 +2,6 @@ package com.sulvic.sqfixer.helper;
 
 import java.util.List;
 
-import com.sulvic.sqfixer.SpiderQueenFixer;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
@@ -50,16 +48,18 @@ public class OfferingPatchHelper{
 			for(Entity entity: entityList) ((EntityLiving)entity).getNavigator().tryMoveToXYZ(entityItem.posX, entityItem.posY, entityItem.posZ, 0.8d);
 			if(entityList.size() > 0 && entityItem.age >= 100 && stack.hasTagCompound()){
 				Entity entity = entityList.get(0);
-				if(offerCooldown > 0) offerCooldown--;
-				else{
-					if(stack.stackSize > 0) stack.stackSize--;
-					else entityItem.setDead();
-					EntityPlayer player = world.getPlayerEntityByName(stack.getTagCompound().getString("player"));
-					if(player != null && !world.isRemote){
-						player.addChatComponentMessage(new ChatComponentText("\u00A7AThe " + entity.getCommandSenderName() + "s have accepted your offering."));
-						ReputationHandler.onReputationChange(player, (EntityLiving)entity, 1);
+				if(!world.isRemote){
+					if(offerCooldown > 0) offerCooldown--;
+					else{
+						if(stack.stackSize > 0) stack.stackSize--;
+						else entityItem.setDead();
+						EntityPlayer player = world.getPlayerEntityByName(stack.getTagCompound().getString("player"));
+						if(player != null){
+							player.addChatComponentMessage(new ChatComponentText("\u00A7AThe " + entity.getCommandSenderName() + "s have accepted your offering."));
+							ReputationHandler.onReputationChange(player, (EntityLiving)entity, 1);
+						}
+						offerCooldown = OFFER_MAX_COOLDOWN;
 					}
-					offerCooldown = OFFER_MAX_COOLDOWN;
 				}
 			}
 			else if(!stack.hasTagCompound()){

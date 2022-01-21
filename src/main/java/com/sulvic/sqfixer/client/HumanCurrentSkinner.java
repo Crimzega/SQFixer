@@ -79,7 +79,9 @@ public class HumanCurrentSkinner{
 			catch(IOException ex){
 				ex.printStackTrace();
 			}
-			if(info != null) RenderHumanReskin.populateData(origName, info);
+			if(info != null){
+				RenderHumanReskin.populateData(origName, info);
+			}
 		}
 	}
 	

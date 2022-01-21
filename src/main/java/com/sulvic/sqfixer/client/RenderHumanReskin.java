@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL11;
 import com.google.common.collect.Maps;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
+import com.sulvic.sqfixer.SpiderQueenFixer;
 import com.sulvic.sqfixer.client.HumanCurrentSkinner.HumanInfo;
 
 import net.minecraft.client.Minecraft;
@@ -46,16 +47,7 @@ public class RenderHumanReskin extends RenderBiped{
 		renderLivingLabel(human, NAME_TO_INFO.containsKey(label)? NAME_TO_INFO.get(label).getGameProfile().getName(): label, posX, posY, posZ, 64);
 	}
 	
-	protected ResourceLocation getEntityTexture(EntityHuman human){
-		ResourceLocation resLoc = AbstractClientPlayer.locationStevePng;
-		HumanInfo info = NAME_TO_INFO.get(human.getUsername());
-		if(info != null){
-			SkinManager manager = Minecraft.getMinecraft().func_152342_ad();
-			Map map = manager.func_152788_a(info.getGameProfile());
-			if(map.containsKey(Type.SKIN)) resLoc = manager.func_152792_a((MinecraftProfileTexture)map.get(Type.SKIN), Type.SKIN);
-		}
-		return resLoc;
-	}
+	protected ResourceLocation getEntityTexture(EntityHuman human){ return AbstractClientPlayer.locationStevePng; }
 	
 	protected ResourceLocation getEntityTexture(Entity entity){ return getEntityTexture((EntityHuman)entity); }
 	
@@ -114,11 +106,17 @@ public class RenderHumanReskin extends RenderBiped{
 	public void doRender(Entity entity, double posX, double posY, double posZ, float rotationYaw, float rotationPitch){ doRender((EntityHuman)entity, posX, posY, posZ, rotationYaw, rotationPitch); }
 	
 	public void doRender(EntityHuman human, double posX, double posY, double posZ, float rotationYaw, float rotationPitch){
+		HumanInfo info = NAME_TO_INFO.get(human.getUsername());
+		if(info != null){
+			SkinManager manager = Minecraft.getMinecraft().func_152342_ad();
+			Map map = manager.func_152788_a(info.getGameProfile());
+			if(map.containsKey(Type.SKIN)) bindTexture(manager.func_152792_a((MinecraftProfileTexture)map.get(Type.SKIN), Type.SKIN));
+		}
 		double posYCorrection = posY - human.yOffset;
-		this.shadowOpaque = 1f;
+		shadowOpaque = 1f;
 		ItemStack heldItem = human.getHeldItem();
-		this.modelBipedMain.heldItemRight = (heldItem == null)? 0: 1;
-		this.modelBipedMain.isSneak = human.isSneaking();
+		modelBipedMain.heldItemRight = (heldItem == null)? 0: 1;
+		modelBipedMain.isSneak = human.isSneaking();
 		if(heldItem != null){
 			EnumAction useAction = heldItem.getItemUseAction();
 			if(useAction == EnumAction.bow) modelBipedMain.aimedBow = true;

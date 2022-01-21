@@ -62,7 +62,8 @@ public class DataHandlerTransformer implements IClassTransformer{
 				insnList.add(new VarInsnNode(ALOAD, 1));
 				insnList.add(new VarInsnNode(ALOAD, 0));
 				insnList.add(new FieldInsnNode(GETFIELD, "sq/items/ItemOffering", "offeringType", "Lsq/enums/EnumOfferingType;"));
-				insnList.add(new MethodInsnNode(INVOKEVIRTUAL, "com/sulvic/sqfixer/helper/OfferingPatchHelper", "onEntityItemUpdate", "(Lnet/minecraft/entity/item/EntityItem;Lsq/enums/EnumOfferingType;)Z", false));
+				insnList.add(new MethodInsnNode(INVOKEVIRTUAL, "com/sulvic/sqfixer/helper/OfferingPatchHelper", "onEntityItemUpdate", "(Lnet/minecraft/entity/item/EntityItem;Lsq/enums/EnumOfferingType;)Z",
+					false));
 				insnList.add(new InsnNode(IRETURN));
 				insnList.add(new LabelNode());
 				methodNode.instructions.add(insnList);

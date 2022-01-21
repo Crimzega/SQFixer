@@ -21,7 +21,6 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import radixcore.util.RadixExcept;
-import sq.core.ReputationHandler;
 import sq.core.SpiderCore;
 import sq.core.minecraft.ModBlocks;
 
@@ -37,8 +36,6 @@ public class SpiderQueenFixer{
 	public SpiderQueenFixer(){
 		logger = LogManager.getLogger(ReferenceSQF.MODID);
 		logger.info("This logger is created to ensure that the mod works as intended.");
-		logger.info(Arrays.toString(ReputationHandler.class.getDeclaredMethods()));
-		logger.info(Arrays.toString(ReputationHandler.class.getMethods()));
 	}
 	
 	public static Logger getLogger(){ return instance.logger; }

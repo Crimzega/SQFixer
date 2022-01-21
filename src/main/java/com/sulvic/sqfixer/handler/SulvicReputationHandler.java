@@ -15,13 +15,12 @@ import sq.entity.ai.ReputationContainer;
 
 public class SulvicReputationHandler{
 	
-	private static void execRepChangeHandler(String name, Object... values){
+	private static void execRepChangeHandler(String name, EntityPlayer player, EntityLivingBase livingBase, int oldRep, int newRep){
 		try{
 			Class<ReputationHandler> handlerClass = ReputationHandler.class;
-			Class<?>[] classes = new Class<?>[values.length];
 			Method method = handlerClass.getDeclaredMethod(name, new Class<?>[]{EntityPlayer.class, EntityLivingBase.class, int.class, int.class});
 			if(!method.isAccessible()) method.setAccessible(true);
-			method.invoke(handlerClass, values);
+			method.invoke(handlerClass, player, livingBase, oldRep, newRep);
 		}
 		catch(NoSuchMethodException ex){
 			ex.printStackTrace();
