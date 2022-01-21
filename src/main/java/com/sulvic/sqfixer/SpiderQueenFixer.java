@@ -20,9 +20,8 @@ import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityClientPlayerMP;
 import radixcore.util.RadixExcept;
+import sq.core.ReputationHandler;
 import sq.core.SpiderCore;
 import sq.core.minecraft.ModBlocks;
 
@@ -37,24 +36,26 @@ public class SpiderQueenFixer{
 	
 	public SpiderQueenFixer(){
 		logger = LogManager.getLogger(ReferenceSQF.MODID);
-		logger.info("This logger is created to ensure that the mod works as intended");
+		logger.info("This logger is created to ensure that the mod works as intended.");
+		logger.info(Arrays.toString(ReputationHandler.class.getDeclaredMethods()));
+		logger.info(Arrays.toString(ReputationHandler.class.getMethods()));
 	}
+	
+	public static Logger getLogger(){ return instance.logger; }
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent evt){
 		proxy.registerRenders();
 		SpiderCore.fakePlayerNames = downloadFakePlayerNames();
 		HumanCurrentSkinner.init();
-		EntityClientPlayerMP thePlayer = Minecraft.func_71410_x().field_71439_g;
-		SpiderCore.fakePlayerNames.add(thePlayer.func_70005_c_());
-		HumanCurrentSkinner.addPlayer(thePlayer);
+		HumanCurrentSkinner.populateData();
 		logger.info("This should apply missing names from redirects. Name List: {}", Arrays.toString(SpiderCore.fakePlayerNames.toArray()));
 	}
 	
 	@EventHandler
 	public void init(FMLInitializationEvent evt){
 		logger.info("This init method exists to only set missing unlocalized names.");
-		ModBlocks.webBed.setUnlocalizedName("web-bed");
+		ModBlocks.webBed.setBlockName("web-bed");
 	}
 	
 	private HttpURLConnection findFinalPath(String urlStr, String cookies) throws IOException{
@@ -80,6 +81,7 @@ public class SpiderQueenFixer{
 			readSkinsFromURL(SpiderCore.PERM_SKINS_URL, returnList);
 			readSkinsFromURL(SpiderCore.SKINS_URL, returnList);
 			logger.info("Contributor/volunteer player names downloaded successfully!");
+			logger.info("");
 		}
 		catch(Throwable ex){
 			RadixExcept.logErrorCatch(ex, "Unable to download player names.");
