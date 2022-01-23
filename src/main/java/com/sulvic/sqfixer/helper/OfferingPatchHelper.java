@@ -2,6 +2,8 @@ package com.sulvic.sqfixer.helper;
 
 import java.util.List;
 
+import com.sulvic.sqfixer.SpiderQueenFixer;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
@@ -22,7 +24,6 @@ import sq.items.ItemOffering;
 
 public class OfferingPatchHelper{
 	
-	private static final int OFFER_MAX_COOLDOWN = 20;
 	private int offerCooldown;
 	
 	public OfferingPatchHelper(){}
@@ -58,7 +59,7 @@ public class OfferingPatchHelper{
 							player.addChatComponentMessage(new ChatComponentText("\u00A7AThe " + entity.getCommandSenderName() + "s have accepted your offering."));
 							ReputationHandler.onReputationChange(player, (EntityLiving)entity, 1);
 						}
-						offerCooldown = OFFER_MAX_COOLDOWN;
+						offerCooldown = SpiderQueenFixer.getConfig().getPickupDelay();
 					}
 				}
 			}

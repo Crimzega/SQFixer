@@ -1,30 +1,24 @@
 package com.sulvic.sqfixer;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.net.*;
+import java.util.*;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.*;
 
-import com.sulvic.sqfixer.client.HumanCurrentSkinner;
+import com.sulvic.sqfixer.client.*;
 import com.sulvic.sqfixer.proxy.ServerSQF;
 
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.Mod.*;
 import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.*;
+import ibxm.Player;
 import radixcore.util.RadixExcept;
 import sq.core.SpiderCore;
 import sq.core.minecraft.ModBlocks;
 
-@Mod(modid = ReferenceSQF.MODID, name = ReferenceSQF.NAME, version = ReferenceSQF.VERSION, dependencies = ReferenceSQF.DEPENDENCIES)
+@Mod(modid = ReferenceSQF.MODID, name = ReferenceSQF.NAME, version = ReferenceSQF.VERSION, dependencies = ReferenceSQF.DEPENDENCIES, guiFactory = ReferenceSQF.GUI_FACTORY)
 public class SpiderQueenFixer{
 	
 	@Instance(ReferenceSQF.MODID)
@@ -32,6 +26,7 @@ public class SpiderQueenFixer{
 	@SidedProxy(clientSide = ReferenceSQF.CLIENT, serverSide = ReferenceSQF.SERVER)
 	public static ServerSQF proxy;
 	private Logger logger;
+	private ConfigSQF config;
 	
 	public SpiderQueenFixer(){
 		logger = LogManager.getLogger(ReferenceSQF.MODID);
@@ -40,12 +35,17 @@ public class SpiderQueenFixer{
 	
 	public static Logger getLogger(){ return instance.logger; }
 	
+	public static ConfigSQF getConfig(){ return instance.config; }
+	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent evt){
 		proxy.registerRenders();
+		config = new ConfigSQF(evt);
+		config.build();
 		SpiderCore.fakePlayerNames = downloadFakePlayerNames();
-		HumanCurrentSkinner.init();
-		HumanCurrentSkinner.populateData();
+		PlayerInfoStorage.init();
+		PlayerInfoStorage.populate();
+		PlayerInfoStorage.applyConfigData();
 		logger.info("This should apply missing names from redirects. Name List: {}", Arrays.toString(SpiderCore.fakePlayerNames.toArray()));
 	}
 	
@@ -78,7 +78,6 @@ public class SpiderQueenFixer{
 			readSkinsFromURL(SpiderCore.PERM_SKINS_URL, returnList);
 			readSkinsFromURL(SpiderCore.SKINS_URL, returnList);
 			logger.info("Contributor/volunteer player names downloaded successfully!");
-			logger.info("");
 		}
 		catch(Throwable ex){
 			RadixExcept.logErrorCatch(ex, "Unable to download player names.");
@@ -93,6 +92,7 @@ public class SpiderQueenFixer{
 			while(scanner.hasNext()) returnList.add(scanner.next());
 			scanner.close();
 		}
+		logger.info("");
 	}
 	
 }

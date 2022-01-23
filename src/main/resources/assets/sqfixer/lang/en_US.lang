@@ -1,0 +1,12 @@
+#Spider Queen Specifics
+tile.mandragora.name=Mandragora
+tile.spiderrod.name=Spider Rod
+tile.web-bed.name=Web Bedding
+tile.web-normal-block.name=Web Block
+tile.web-poison-block.name=Poisoned Web Block
+tile.lantern.name=Lantern
+
+#Spider Queen Fixer Config
+sqfixer.config.category.items=Item Config Properties
+sqfixer.config.pickupDelay=Item Pickup Delay (Seconds)
+sqfixer.config.addFixerCreator=Add Crimzega
