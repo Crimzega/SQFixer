@@ -18,7 +18,7 @@ import cpw.mods.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
 public class FixerLoadingPlugin implements IFMLLoadingPlugin{
 	
 	protected static boolean isObfuscated;
-	protected static Logger logger = LogManager.getLogger("sqfixer-asm");
+	protected static Logger logger = LogManager.getLogger("SQFixer ASM");
 	
 	public String getAccessTransformerClass(){ return DataHandlerTransformer.class.getName(); }
 	
@@ -30,7 +30,7 @@ public class FixerLoadingPlugin implements IFMLLoadingPlugin{
 	
 	public void injectData(Map<String, Object> data){
 		isObfuscated = (Boolean)data.get("runtimeDeobfuscationEnabled");
-		logger.info(isObfuscated);
+		logger.info("Classes are obfuscated: " + isObfuscated);
 	}
 	
 }

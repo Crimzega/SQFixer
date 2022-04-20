@@ -1,19 +1,33 @@
 package com.sulvic.sqfixer;
 
 import java.io.IOException;
-import java.net.*;
-import java.util.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Scanner;
+import java.util.Set;
 
-import org.apache.logging.log4j.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import com.sulvic.sqfixer.client.*;
+import com.google.common.collect.Sets;
+import com.sulvic.sqfixer.client.ConfigSQF;
+import com.sulvic.sqfixer.client.PlayerInfoStorage;
+import com.sulvic.sqfixer.handler.ServerTickHandler;
 import com.sulvic.sqfixer.proxy.ServerSQF;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.*;
+import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.*;
-import ibxm.Player;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import radixcore.util.RadixExcept;
 import sq.core.SpiderCore;
 import sq.core.minecraft.ModBlocks;
@@ -27,10 +41,21 @@ public class SpiderQueenFixer{
 	public static ServerSQF proxy;
 	private Logger logger;
 	private ConfigSQF config;
+	public static Set<Block> bedLogs = Sets.newHashSet(Blocks.log, Blocks.log2);
 	
 	public SpiderQueenFixer(){
-		logger = LogManager.getLogger(ReferenceSQF.MODID);
+		logger = LogManager.getLogger("SQFixer");
 		logger.info("This logger is created to ensure that the mod works as intended.");
+	}
+	
+	private static void applyBlocks(){
+		for(String additionalLog: getConfig().additionalBedLogs()){
+			String[] split = additionalLog.split(":");
+			Block block = GameRegistry.findBlock(split[0], split[1]);
+			getLogger().info("Possibly found block: " + block);
+			if(block != null) bedLogs.add(block);
+		}
+		getLogger().info("Web bed block count: " + bedLogs.size());
 	}
 	
 	public static Logger getLogger(){ return instance.logger; }
@@ -47,12 +72,14 @@ public class SpiderQueenFixer{
 		PlayerInfoStorage.populate();
 		PlayerInfoStorage.applyConfigData();
 		logger.info("This should apply missing names from redirects. Name List: {}", Arrays.toString(SpiderCore.fakePlayerNames.toArray()));
+		FMLCommonHandler.instance().bus().register(new ServerTickHandler());
 	}
 	
 	@EventHandler
 	public void init(FMLInitializationEvent evt){
-		logger.info("This init method exists to only set missing unlocalized names.");
+		logger.info("This init method exists to set missing unlocalized names and apply mod blocks.");
 		ModBlocks.webBed.setBlockName("web-bed");
+		applyBlocks();
 	}
 	
 	private HttpURLConnection findFinalPath(String urlStr, String cookies) throws IOException{

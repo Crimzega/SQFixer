@@ -22,16 +22,7 @@ public class SulvicReputationHandler{
 			if(!method.isAccessible()) method.setAccessible(true);
 			method.invoke(handlerClass, player, livingBase, oldRep, newRep);
 		}
-		catch(NoSuchMethodException ex){
-			ex.printStackTrace();
-		}
-		catch(IllegalAccessException ex){
-			ex.printStackTrace();
-		}
-		catch(IllegalArgumentException ex){
-			ex.printStackTrace();
-		}
-		catch(InvocationTargetException ex){
+		catch(NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex){
 			ex.printStackTrace();
 		}
 	}
