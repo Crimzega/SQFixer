@@ -1,4 +1,4 @@
-package com.sulvic.sqfixer.client;
+package com.sulvic.sqfixer.client.render;
 
 import static net.minecraft.client.renderer.OpenGlHelper.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -9,6 +9,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.sulvic.sqfixer.SpiderQueenFixer;
+import com.sulvic.sqfixer.client.PlayerInfoStorage;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -26,15 +27,18 @@ import sq.entity.creature.EntityHuman;
 
 @SuppressWarnings({"rawtypes", "unused"})
 public class RenderHumanFix extends RenderBiped{
-	
+
 	private final ModelBiped modelArmorPlate, modelArmor;
-	
+	private final double labelDistSq;
+
 	public RenderHumanFix(){
 		super(new ModelBiped(0f), 0.5f);
 		modelArmorPlate = new ModelBiped(1f);
 		modelArmor = new ModelBiped(0.5f);
+		double labelDist = SpiderQueenFixer.getConfig().renderHumanLabelDistance();
+		labelDistSq = labelDist * labelDist;
 	}
-	
+
 	private ResourceLocation getEntityTexture(EntityHuman human){
 		ResourceLocation resLoc = AbstractClientPlayer.locationStevePng;
 		if(SpiderCore.getConfig().showHumanSkin){
@@ -49,7 +53,7 @@ public class RenderHumanFix extends RenderBiped{
 		}
 		return resLoc;
 	}
-	
+
 	private void renderHuman(EntityHuman entity, double posX, double posY, double posZ, float rotationYaw, float rotationPitch){
 		double correctionPosY = posY - entity.yOffset;
 		shadowOpaque = 1f;
@@ -66,11 +70,11 @@ public class RenderHumanFix extends RenderBiped{
 		modelBipedMain.isSneak = false;
 		modelBipedMain.heldItemRight = 0;
 	}
-	
+
 	private void renderLabel(EntityHuman human, double posX, double posY, double posZ, String label){
 		label = label.equals("LuvTrumpetStyle")? "SheWolfDeadly": label;
 		double distSq = human.getDistanceSqToEntity(renderManager.livingPlayer);
-		if(distSq <= 4096){
+		if(distSq <= 4096d){
 			FontRenderer fontRenderer = getFontRendererFromRenderManager();
 			float labelScale = 0.0268F;
 			glPushMatrix();
@@ -105,24 +109,28 @@ public class RenderHumanFix extends RenderBiped{
 			glPopMatrix();
 		}
 	}
-	
+
 	protected ResourceLocation getEntityTexture(Entity human){ return getEntityTexture((EntityHuman)human); }
-	
+
 	protected void passSpecialRender(EntityLivingBase livingBase, double posX, double posY, double posZ){
 		if(Minecraft.isGuiEnabled()){
 			EntityHuman human = (EntityHuman)livingBase;
 			double distance = RadixMath.getDistanceToEntity(human, Minecraft.getMinecraft().thePlayer);
-			if(distance <= 32d){
+			if(distance <= SpiderQueenFixer.getConfig().renderHumanLabelDistance()){
 				if((SpiderCore.getConfig()).showHumanName) renderLabel(human, posX, posY + 0.05000000074505806d, posZ, human.getUsername());
 				if((SpiderCore.getConfig()).showHumanType) renderLabel(human, posX, posY - 0.20000000298023224d, posZ, human.getFortuneString());
 			}
 		}
 	}
-	
+
 	protected void preRenderCallback(EntityLivingBase livingBase, float partialTickTime){ glScalef(0.9375f, 0.9375f, 0.9375f); }
-	
-	public void doRender(Entity entity, double posX, double posY, double posZ, float rotationYaw, float rotationPitch){ renderHuman((EntityHuman)entity, posX, posY, posZ, rotationYaw, rotationPitch); }
-	
-	public void doRender(EntityLiving living, double posX, double posY, double posZ, float rotationYaw, float rotationPitch){ renderHuman((EntityHuman)living, posX, posY, posZ, rotationYaw, rotationPitch); }
-	
+
+	public void doRender(Entity entity, double posX, double posY, double posZ, float rotationYaw, float rotationPitch){
+		renderHuman((EntityHuman)entity, posX, posY, posZ, rotationYaw, rotationPitch);
+	}
+
+	public void doRender(EntityLiving living, double posX, double posY, double posZ, float rotationYaw, float rotationPitch){
+		renderHuman((EntityHuman)living, posX, posY, posZ, rotationYaw, rotationPitch);
+	}
+
 }

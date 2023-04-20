@@ -15,19 +15,19 @@ import com.sulvic.sqfixer.SpiderQueenFixer;
 import sq.core.SpiderCore;
 
 public class PlayerInfoStorage{
-	
+
 	private static final Map<String, UUID> NAME_TO_UUID = Maps.newHashMap();
 	private static final Map<UUID, GameProfile> CURRENT_PROFILE = Maps.newHashMap();
-	
+
 	private static boolean hasId(String name){ return getIdFromOldName(name) != null; }
-	
+
 	private static UUID getIdFromOldName(String name){ return NAME_TO_UUID.get(getStoredName(name)); }
-	
+
 	private static String getStoredName(String name){ return name.equals("LuvTrumpetStyle")? "SheWolfDeadly": name; }
-	
+
 	public static void init(){
 		// PERM_SKINS_UUID
-		NAME_TO_UUID.put("djoslin", (UUID)null);
+		NAME_TO_UUID.put("djoslin", UUID.fromString("0c7738b5-1b87-40f5-845d-966418fb8a38")); // Completely unsure of this uuid
 		NAME_TO_UUID.put("Lemonszz", UUID.fromString("0b33b89f-042b-4255-9322-131c660a568a"));
 		NAME_TO_UUID.put("WildBamaBoy", UUID.fromString("a690e673-7acf-48d5-b7df-4bb3f86d6b1c"));
 		NAME_TO_UUID.put("SheWolfDeadly", UUID.fromString("4384cd57-9235-4f36-814d-635d45f28297"));
@@ -38,7 +38,7 @@ public class PlayerInfoStorage{
 		NAME_TO_UUID.put("mario384", UUID.fromString("03e568d5-7ab1-4405-ae82-0ffc48d337fd"));
 		NAME_TO_UUID.put("TBone105", UUID.fromString("e93c0370-c378-41bb-a726-80066ab23b87"));
 		NAME_TO_UUID.put("scottnov", UUID.fromString("1bf55188-e635-4c82-a3d8-335f5fb0f078"));
-		NAME_TO_UUID.put("AllenWL", (UUID)null);
+		NAME_TO_UUID.put("AllenWL", UUID.fromString("02a310d9-5149-45d3-96fa-a85c3cc7fb91"));
 		NAME_TO_UUID.put("Xiari", UUID.fromString("fcd8f5fd-4986-411f-a14c-7acba169e781"));
 		// SKINS_UUID
 		NAME_TO_UUID.put("CakeKittyCat", UUID.fromString("cfca7cfd-8383-4472-a0e4-afe749a72658"));
@@ -65,17 +65,20 @@ public class PlayerInfoStorage{
 		NAME_TO_UUID.put("Khaamat", UUID.fromString("9223a4cf-4ace-44f9-9bca-b16d5d70d8d0"));
 		NAME_TO_UUID.put("Danielblom", UUID.fromString("1023f4a8-2b43-41b9-86cd-c3ca9a3c83d6"));
 	}
-	
+
 	public static void populate(){
-		for(String origName: NAME_TO_UUID.keySet()){
+		for(Map.Entry<String, UUID> entry: NAME_TO_UUID.entrySet()){
 			Gson gson = new GsonBuilder().registerTypeAdapter(GameProfile.class, new ProfileDeserializer()).create();
 			URL url;
 			try{
-				UUID id = NAME_TO_UUID.get(origName);
+				UUID id = entry.getValue();
 				if(id != null){
 					url = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + id.toString());
 					HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-					GameProfile profile = gson.fromJson(new InputStreamReader(conn.getInputStream()), GameProfile.class);
+					conn.addRequestProperty("Accept", "application/json");
+					InputStreamReader reader = new InputStreamReader(conn.getInputStream());
+					GameProfile profile = gson.fromJson(reader, GameProfile.class);
+					reader.close();
 					CURRENT_PROFILE.put(id, profile);
 				}
 			}
@@ -84,17 +87,21 @@ public class PlayerInfoStorage{
 			}
 		}
 	}
-	
+
 	public static void applyConfigData(){
+		String name = "Crimzega";
 		if(SpiderQueenFixer.getConfig().addCreatorToPlayerList()){
-				String name = "Crimzega";
-				SpiderCore.fakePlayerNames.add(name);
-				UUID id = UUID.fromString("7db16c19-6e67-4931-afb8-78db3f640d3c");
-				NAME_TO_UUID.put(name, UUID.fromString("7db16c19-6e67-4931-afb8-78db3f640d3c"));
-				try{Gson gson = new GsonBuilder().registerTypeAdapter(GameProfile.class, new ProfileDeserializer()).create();
+			SpiderCore.fakePlayerNames.add(name);
+			UUID id = UUID.fromString("7db16c19-6e67-4931-afb8-78db3f640d3c");
+			NAME_TO_UUID.put(name, id);
+			try{
+				Gson gson = new GsonBuilder().registerTypeAdapter(GameProfile.class, new ProfileDeserializer()).create();
 				URL url = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + id.toString());
 				HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-				GameProfile profile = gson.fromJson(new InputStreamReader(conn.getInputStream()), GameProfile.class);
+				conn.addRequestProperty("Accept", "application/json");
+				InputStreamReader reader = new InputStreamReader(conn.getInputStream());
+				GameProfile profile = gson.fromJson(reader, GameProfile.class);
+				reader.close();
 				CURRENT_PROFILE.put(id, profile);
 			}
 			catch(IOException ex){
@@ -102,18 +109,17 @@ public class PlayerInfoStorage{
 			}
 		}
 		else{
-			String name = "Crimzega";
 			SpiderCore.fakePlayerNames.remove("Crimzega");
 			UUID id = NAME_TO_UUID.get(name);
 			CURRENT_PROFILE.remove(id);
 			NAME_TO_UUID.remove(name);
 		}
 	}
-	
+
 	public static GameProfile getProfileFromOldName(String name){ return hasId(name)? CURRENT_PROFILE.get(getIdFromOldName(name)): (GameProfile)null; }
-	
+
 	private static class ProfileDeserializer implements JsonDeserializer<GameProfile>{
-		
+
 		public GameProfile deserialize(JsonElement jsonElem, Type type, JsonDeserializationContext context) throws JsonParseException{
 			JsonObject jsonObj = jsonElem.getAsJsonObject();
 			String id = jsonObj.get("id").getAsString().replaceAll("([\\da-f]{8})([\\da-f]{4})([\\da-f]{4})([\\da-f]{4})([\\da-f]{12})", "$1-$2-$3-$4-$5");
@@ -127,7 +133,7 @@ public class PlayerInfoStorage{
 			}
 			return profile;
 		}
-		
+
 	}
-	
+
 }

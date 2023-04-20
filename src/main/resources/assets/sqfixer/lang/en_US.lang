@@ -1,3 +1,8 @@
+#Spider Queen Fixer Key Bindings
+sqfixer.changeSkin=Change Skin
+sqfixer.keyBinds=Spider Queen Fixer
+
+
 #Spider Queen Specifics
 tile.mandragora.name=Mandragora
 tile.spiderrod.name=Spider Rod
@@ -8,5 +13,5 @@ tile.lantern.name=Lantern
 
 #Spider Queen Fixer Config
 sqfixer.config.category.items=Item Config Properties
+sqfixer.config.category.world=Entity Config Properties
 sqfixer.config.pickupDelay=Item Pickup Delay (Seconds)
-sqfixer.config.addFixerCreator=Add Crimzega

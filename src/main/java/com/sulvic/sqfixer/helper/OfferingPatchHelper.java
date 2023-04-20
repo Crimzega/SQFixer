@@ -23,11 +23,11 @@ import sq.enums.EnumOfferingType;
 import sq.items.ItemOffering;
 
 public class OfferingPatchHelper{
-	
+
 	private int offerCooldown;
-	
+
 	public OfferingPatchHelper(){}
-	
+
 	public boolean onEntityItemUpdate(EntityItem entityItem, EnumOfferingType type){
 		Class<? extends EntityMob> mobClass = null;
 		World world = entityItem.worldObj;
@@ -74,5 +74,5 @@ public class OfferingPatchHelper{
 		}
 		else return false;
 	}
-	
+
 }

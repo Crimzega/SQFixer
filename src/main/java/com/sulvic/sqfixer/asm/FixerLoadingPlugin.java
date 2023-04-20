@@ -16,21 +16,21 @@ import cpw.mods.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
 @SortingIndex(1001)
 @TransformerExclusions("com.sulvic.sqfixer.asm.*")
 public class FixerLoadingPlugin implements IFMLLoadingPlugin{
-	
+
 	protected static boolean isObfuscated;
 	protected static Logger logger = LogManager.getLogger("SQFixer ASM");
-	
+
 	public String getAccessTransformerClass(){ return DataHandlerTransformer.class.getName(); }
-	
+
 	public String[] getASMTransformerClass(){ return null; }
-	
+
 	public String getModContainerClass(){ return null; }
-	
+
 	public String getSetupClass(){ return null; }
-	
+
 	public void injectData(Map<String, Object> data){
 		isObfuscated = (Boolean)data.get("runtimeDeobfuscationEnabled");
 		logger.info("Classes are obfuscated: " + isObfuscated);
 	}
-	
+
 }
