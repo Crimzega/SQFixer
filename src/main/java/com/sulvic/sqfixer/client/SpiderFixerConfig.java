@@ -1,5 +1,6 @@
 package com.sulvic.sqfixer.client;
 
+
 import static com.sulvic.sqfixer.SpiderQueenFixer.*;
 
 import java.io.File;
@@ -10,7 +11,6 @@ import com.google.common.collect.*;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import net.minecraft.entity.EntityLiving;
 import net.minecraftforge.common.config.Configuration;
-import scala.actors.threadpool.Arrays;
 import sq.entity.creature.*;
 
 public class SpiderFixerConfig extends Configuration{
