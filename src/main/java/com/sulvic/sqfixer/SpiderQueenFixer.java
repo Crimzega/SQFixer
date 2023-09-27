@@ -1,109 +1,76 @@
 package com.sulvic.sqfixer;
 
-import java.lang.reflect.Field;
+import static com.sulvic.sqfixer.SpiderFixerReference.*;
+
 import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.*;
 
-import com.google.common.collect.Sets;
-import com.sulvic.sqfixer.client.ConfigSQF;
-import com.sulvic.sqfixer.client.PlayerInfoStorage;
-import com.sulvic.sqfixer.handler.FixerHandler;
-import com.sulvic.sqfixer.helper.PlayerNamesHelper;
-import com.sulvic.sqfixer.proxy.ServerSQF;
+import com.sulvic.sqfixer.asm.FixerHandlers;
+import com.sulvic.sqfixer.client.SpiderFixerConfig;
+import com.sulvic.sqfixer.common.HumanInfo;
+import com.sulvic.sqfixer.common.item.ItemSkinSwitcher;
+import com.sulvic.sqfixer.proxy.SpiderFixerServer;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerAboutToStartEvent;
-import cpw.mods.fml.common.registry.EntityRegistry;
-import cpw.mods.fml.common.registry.GameData;
-import cpw.mods.fml.common.registry.GameRegistry;
-import net.minecraft.block.Block;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemFood;
-import net.minecraft.world.biome.BiomeGenBase;
+import cpw.mods.fml.common.*;
+import cpw.mods.fml.common.Mod.*;
+import cpw.mods.fml.common.event.*;
+import cpw.mods.fml.common.registry.*;
+import net.minecraft.init.Items;
+import net.minecraft.item.*;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 import sq.core.SpiderCore;
-import sq.core.minecraft.ModBlocks;
-import sq.core.minecraft.Spawner;
-import sq.util.SpawnEntry;
+import sq.core.minecraft.*;
 
-@Mod(modid = ReferenceSQF.MODID, name = ReferenceSQF.NAME, version = ReferenceSQF.VERSION, dependencies = ReferenceSQF.DEPENDENCIES, guiFactory = ReferenceSQF.GUI_FACTORY)
+@Mod(modid = MODID, name = NAME, version = VERSION, dependencies = DEPENDENCIES, guiFactory = GUI_FACTORY)
 @SuppressWarnings({"unchecked"})
 public class SpiderQueenFixer{
 
-	@Instance(ReferenceSQF.MODID)
+	public ItemSkinSwitcher skinSwitcher;
+	@Instance(MODID)
 	public static SpiderQueenFixer instance;
-	@SidedProxy(clientSide = ReferenceSQF.CLIENT, serverSide = ReferenceSQF.SERVER)
-	public static ServerSQF proxy;
 	private Logger logger;
-	private ConfigSQF config;
-	public static Set<Block> bedLogs = Sets.newHashSet(Blocks.log, Blocks.log2);
+	@SidedProxy(clientSide = CLIENT, serverSide = SERVER)
+	public static SpiderFixerServer proxy;
+	private SpiderFixerConfig config;
 
 	public SpiderQueenFixer(){
 		logger = LogManager.getLogger("SQFixer");
 		logger.info("This logger is created to ensure that the mod works as intended.");
 	}
 
-	private static void applyBlocks(){
-		for(String additionalLog: getConfig().additionalBedLogs()){
-			String[] split = additionalLog.split(":");
-			Block block = GameRegistry.findBlock(split[0], split[1]);
-			getLogger().info("Possibly found block: " + block);
-			if(block != null) bedLogs.add(block);
-		}
-		getLogger().info("Web bed block count: " + bedLogs.size());
-	}
-
 	public static Logger getLogger(){ return instance.logger; }
 
-	public static ConfigSQF getConfig(){ return instance.config; }
+	public static SpiderFixerConfig getConfig(){ return instance.config; }
+
+	@EventHandler
+	public void serverStarting(FMLServerStartingEvent evt){ FixerEvents.getSpiderqueensFolder(evt.getServer().getEntityWorld()); }
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent evt){
-		config = new ConfigSQF(evt);
+		logger.info("This preInit method exists to make the config file, apply new renders, register events, and handle human info.");
+		config = new SpiderFixerConfig(evt);
 		config.build();
 		proxy.registerRenders();
-		SpiderCore.fakePlayerNames = PlayerNamesHelper.downloadFakePlayerNames();
-		logger.info(SpiderCore.fakePlayerNames.size());
-		PlayerInfoStorage.init();
-		PlayerInfoStorage.populate();
-		PlayerInfoStorage.applyConfigData();
-		logger.info("This should apply missing names from redirects. Name List: {}", Arrays.toString(SpiderCore.fakePlayerNames.toArray()));
-		FMLCommonHandler.instance().bus().register(FixerHandler.instance);
-		MinecraftForge.EVENT_BUS.register(FixerHandler.instance);
+		SpiderCore.fakePlayerNames.addAll(HumanInfo.redownloadPlayerNames());
+		logger.info("The player names should now be applied from redirects.");
+		logger.info("Player Names: {}", Arrays.toString(SpiderCore.fakePlayerNames.toArray()));
+		HumanInfo.storeIds();
+		FMLCommonHandler.instance().bus().register(FixerEvents.getInstance());
+		MinecraftForge.EVENT_BUS.register(FixerEvents.getInstance());
 	}
 
 	@EventHandler
 	public void init(FMLInitializationEvent evt){
-		logger.info("This init method exists to set missing unlocalized names, apply mod blocks, and Use modifiable spawn data.");
-		try{
-			logger.info("Ensuring use of Minecraft spawn system.");
-			if(SpiderCore.getConfig().useSpawnSystem) logger.info("SpiderQueen is attempting to use it's own spawn system");
-			Field field = Spawner.class.getDeclaredField("spawnEntries");
-			field.setAccessible(true);
-			List<SpawnEntry> entryList = (List<SpawnEntry>)field.get(Spawner.class);
-			for(SpawnEntry entry: entryList){
-				Class<? extends EntityLiving> livingClass = (Class<? extends EntityLiving>)entry.getSpawnClass();
-				EntityRegistry.addSpawn(livingClass, config.getWeightProbability(livingClass), config.getMinCount(livingClass), config.getMaxCount(livingClass), entry.getCreatureType(),
-					entry.getSpawnBiomes().toArray(new BiomeGenBase[0]));
-			}
-		}
-		catch(NoSuchFieldException | IllegalAccessException | SecurityException ex){
-			logger.catching(ex);
-		}
+		logger.info("This init method exists to set missing unlocalized names, apply mod blocks, increase max stacks, and use modified spawn data.");
+		skinSwitcher = new ItemSkinSwitcher();
+		GameRegistry.registerItem(skinSwitcher, "skin_switcher");
+		GameRegistry.addRecipe(new ShapedOreRecipe(skinSwitcher, new String[]{" I ", "IGI", " I "}, 'I', Items.iron_ingot, 'G', "paneGlass"));
 		ModBlocks.webBed.setBlockName("web-bed");
-		applyBlocks();
+		FixerHandlers.applyNewLogs();
+		ModItems.royalBlood.setMaxStackSize(16);
+		ModItems.spiderEgg.setMaxStackSize(16);
 	}
 
 	@EventHandler

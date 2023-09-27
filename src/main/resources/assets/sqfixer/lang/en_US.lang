@@ -1,17 +1,53 @@
-#Spider Queen Fixer Key Bindings
-sqfixer.changeSkin=Change Skin
-sqfixer.keyBinds=Spider Queen Fixer
-
-
 #Spider Queen Specifics
-tile.mandragora.name=Mandragora
+entity.SQ.EntitySpiderQueen.name=Spider Queen
+entity.SQ.EntityOctopus.name=Octopus
+tile.mandragora.name=Mandragora Crops
 tile.spiderrod.name=Spider Rod
 tile.web-bed.name=Web Bedding
 tile.web-normal-block.name=Web Block
 tile.web-poison-block.name=Poisoned Web Block
 tile.lantern.name=Lantern
 
+#Spider Queen Fixer Skin Switcher
+item.skin_switcher.name=Skin Switcher
+
 #Spider Queen Fixer Config
 sqfixer.config.category.items=Item Config Properties
-sqfixer.config.category.world=Entity Config Properties
+sqfixer.config.category.items.tooltip=Anything item related
+sqfixer.config.category.render=Render Config Properties
+sqfixer.config.category.render.tooltip=Anything render distance related
+sqfixer.config.category.world=World Config Properties
+sqfixer.config.category.world.tooltip=Anything world related (usually entity spawn chance)
+sqfixer.config.addFixerCreator=Add Crimzega?
+sqfixer.config.allowCreativeString=Allow Creative String?
+sqfixer.config.maxLabelDist=Human Label (Max Distance)
+sqfixer.config.moreBedLogs=More Bed Logs
 sqfixer.config.pickupDelay=Item Pickup Delay (Seconds)
+sqfixer.config.beetleMaxCount=Beetle Max Count
+sqfixer.config.beetleMinCount=Beetle Min Count
+sqfixer.config.beetleWeightedProb=Beetle Spawn Chance
+sqfixer.config.flyMaxCount=Fly Max Count
+sqfixer.config.flyMinCount=Fly Min Count
+sqfixer.config.flyWeightedProb=Fly Spawn Chance
+sqfixer.config.flyMaxCount=Fly Max Count
+sqfixer.config.flyMinCount=Fly Min Count
+sqfixer.config.flyWeightedProb=Fly Spawn Chance
+sqfixer.config.humanMaxCount=Human Max Count
+sqfixer.config.humanMinCount=Human Min Count
+sqfixer.config.humanWeightedProb=Human Spawn Chance
+sqfixer.config.mandragoraMaxCount=Mandragora Max Count
+sqfixer.config.mandragoraMinCount=Mandragora Min Count
+sqfixer.config.mandragoraWeightedProb=Mandragora Spawn Chance
+sqfixer.config.maxCropFriendlyDist=Friendly Mandragora Max Crop Distance
+sqfixer.config.octopusMaxCount=Octopus Max Count
+sqfixer.config.octopusMinCount=Octopus Min Count
+sqfixer.config.octopusWeightedProb=Octopus Spawn Chance
+sqfixer.config.spiderQueenMaxCount=Spider Queen Max Count
+sqfixer.config.spiderQueenMinCount=Spider Queen Min Count
+sqfixer.config.spiderQueenspierQueenWeightedProb=Spider Queen Spawn Chance
+sqfixer.config.waspMaxCount=Wasp Max Count
+sqfixer.config.waspMinCount=Wasp Min Count
+sqfixer.config.waspWeightedProb=Wasp Spawn Chance
+sqfixer.config.yukiMaxCount=Yuki Max Count
+sqfixer.config.yukiMinCount=Yuki Min Count
+sqfixer.config.yukiWeightedProb=Yuki Spawn Chance
