@@ -1,0 +1,16 @@
+The following information has been altered accordingly:
+
+- Overhaul of mod structure
+- Created custom textures, renderers, and models for cocoons
+- Reimplemented custom cocoon renderer
+- Created custom textures, renderers, and models for spider queens and spider king
+- Created custom textures, renderer, and model for both ants
+- Updated the Config GUI for all in game config updates
+- Updated the Config min and max counts for all entities due to an additional Spider Queen oversight
+- Updated the Mod Info for any possible needed info for humans to be updated
+- Increased Royal Blood stack size from 1 to 16 to decrease inventory clogging
+- Increased stack size of Spider Eggs from 8 to 16
+- Added in the skin switcher from Spider Queen Reborn mod
+- Added a config option for distances between 8 and 48 blocks away for friendly Mandragoras to spawn from their crops
+- Added missing Spider Queen name to Language File
+- Added missing Octopus name to Language File

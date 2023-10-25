@@ -1,0 +1,11 @@
+The following information has been altered accordingly:
+
+- Added AllenWL's UUID from his ExNihilo SuperHard Map
+- Implemented functionality to change the spawn chance, min count, and max count of Spider Queen entities
+- Implemented functionality to become the Spider King instead
+- Implemented functionality to enforce all food to be always edible
+- Implemented API to create more cocoon types and items known as the FixerAPI
+- Changed Cocoon Renderer to allow cocoon model subtypes
+- Altered the functionality of the URL redirection to use a reader instead of a scanner
+- Altered the functionality of the URL links to be sanitized
+- Moved the collection of player names to it's own class

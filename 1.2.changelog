@@ -1,0 +1,8 @@
+The following information has been altered accordingly:
+
+- An attempt to add the original contributors uuids for future proofing the Spider Queen mod (can be wrong).
+- A render rework to apply the current texture and name of the original contributors.
+- A config file to alter the delay of offerings to creepers, skeletons, and zombies in seconds (range of 1 to 20, default is 1).
+- An editable config file through the mod list gui.
+- Added a config variable to add myself to the list of names if you decide to (default is false).
+- Placing the lang file back in the lang folder after an unknown mixup.
