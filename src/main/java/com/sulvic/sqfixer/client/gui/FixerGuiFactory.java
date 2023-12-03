@@ -17,7 +17,6 @@ import net.minecraft.client.gui.*;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.common.config.ConfigElement;
 
-@SuppressWarnings({"rawtypes", "unchecked"})
 public class FixerGuiFactory implements IModGuiFactory{
 
 	public void initialize(Minecraft minecraftInstance){}

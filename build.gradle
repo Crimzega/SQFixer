@@ -1,15 +1,46 @@
-version "1.3"
-group = "com.sulvic.sqfixer"
-archivesBaseName = "SQ-Fixer_1.7.10"
-
-jar {
-	manifest {
-		attributes 'FMLCorePlugin': 'com.sulvic.sqfixer.asm.SpiderFixerPlugin'
-		attributes 'FMLCorePluginContainsFMLMod': 'true'
+buildscript {
+	repositories {
+		mavenCentral()
+		maven {
+			name = "forge"
+			url = "https://maven.minecraftforge.net"
+		}
+		maven {
+			name = "sonatype"
+			url = "https://oss.sonatype.org/content/repositories/snapshots/"
+		}
+	}
+	dependencies {
+		classpath ('com.anatawa12.forge:ForgeGradle:1.2-1.0.+') {
+			changing = true
+		}
 	}
 }
 
+apply plugin: 'forge'
+
+version = "${sqf_version}"
+group = "com.sulvic.sqfixer"
+archivesBaseName = "SQ-Fixer_${mc_version}-${sqf_version}"
+
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = 1.8
+
+repositories {
+	maven {
+		name = 'ChickenBones'
+		url = 'http://chickenbones.net/maven/'
+	}
+}
+
+minecraft {
+	version = "1.7.10-10.13.4.1614-1.7.10"
+	runDir = "eclipse"
+}
+
 dependencies {
+	compile "codechicken:CodeChickenLib:${mc_version}-${cclib_version}:dev"
+	compile "codechicken:CodeChickenCore:${mc_version}-${cccore_version}:dev"
+	compile "codechicken:NotEnoughItems:${mc_version}-${nei_version}:dev"
 	compile fileTree(dir: 'libs', include: ['*.jar'])
 }
 
@@ -24,3 +55,12 @@ processResources {
 		exclude 'mcmod.info'
 	}
 }
+
+jar {
+	manifest {
+		attributes 'FMLCorePlugin': 'com.sulvic.sqfixer.asm.SpiderFixerPlugin'
+		attributes 'FMLCorePluginContainsFMLMod': 'true'
+	}
+}
+
+

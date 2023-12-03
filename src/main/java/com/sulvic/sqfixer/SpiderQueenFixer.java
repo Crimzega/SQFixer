@@ -24,7 +24,6 @@ import sq.core.SpiderCore;
 import sq.core.minecraft.*;
 
 @Mod(modid = MODID, name = NAME, version = VERSION, dependencies = DEPENDENCIES, guiFactory = GUI_FACTORY)
-@SuppressWarnings({"unchecked"})
 public class SpiderQueenFixer{
 
 	public ItemSkinSwitcher skinSwitcher;

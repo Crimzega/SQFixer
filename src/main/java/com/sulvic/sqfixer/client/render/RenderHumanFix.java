@@ -24,7 +24,6 @@ import net.minecraft.util.*;
 import sq.core.SpiderCore;
 import sq.entity.creature.EntityHuman;
 
-@SuppressWarnings("rawtypes")
 public class RenderHumanFix extends RenderBiped{
 
 	private final ModelBiped modelArmor, modelArmorPlate;

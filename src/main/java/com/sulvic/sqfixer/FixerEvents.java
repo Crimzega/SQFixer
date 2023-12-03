@@ -5,6 +5,7 @@ import static com.sulvic.sqfixer.SpiderQueenFixer.*;
 import static net.minecraft.server.MinecraftServer.*;
 
 import java.io.*;
+import java.util.Random;
 import java.util.UUID;
 
 import com.mojang.authlib.GameProfile;
@@ -22,11 +23,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import radixcore.util.RadixMath;
 import sq.core.SpiderCore;
 import sq.core.minecraft.ModAchievements;
 import sq.entity.ai.PlayerExtension;
@@ -37,6 +38,7 @@ public class FixerEvents{
 	private static FixerEvents instance = new FixerEvents();
 	private static final int SLEEP_CHECK_TIME = 20, STRING_TIME = 3600;
 	private int checkSleepingCooldown, stringGenCooldown;
+	private static final Random STRING_RANDOM = new Random();
 
 	private FixerEvents(){}
 
@@ -137,7 +139,7 @@ public class FixerEvents{
 			for(WorldServer worldServer: getServer().worldServers) for(Object obj: worldServer.playerEntities){
 				EntityPlayer player = (EntityPlayer)obj;
 				if(!player.capabilities.isCreativeMode || getConfig().allowCreativeString())
-					player.inventory.addItemStackToInventory(new ItemStack(Items.string, RadixMath.getNumberInRange(1, 3)));
+					player.inventory.addItemStackToInventory(new ItemStack(Items.string, MathHelper.getRandomIntegerInRange(STRING_RANDOM, 1, 3)));
 			}
 			getLogger().info("All possible players should have gotten string.");
 			stringGenCooldown = STRING_TIME;

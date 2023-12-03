@@ -152,68 +152,111 @@ public class ModelRetexedSpiderQueen extends ModelBase{
 		renderer.rotateAngleZ = z;
 	}
 
+	public ModelRenderer getPlayerHead(){ return playerHead; }
+
+	public ModelRenderer getTorso(){ return SpiderCore.getConfig().useSpiderQueenModel? sqTorso: playerTorso; }
+	
+	public ModelRenderer getRightArm(){ return SpiderCore.getConfig().useSpiderQueenModel? sqArmR: playerArmR; }
+
 	public void setLivingAnimations(EntityLivingBase livingBase, float limbSwing, float limbSwingAmount, float partialTicks){}
 
 	public void setRotationAngles(float limbSwing, float limbSwingAmount, float time, float rotationYaw, float rotationPitch, float partialTicks){
 		sqHead.rotateAngleX = playerHead.rotateAngleX = playerHeadwear.rotateAngleX = rotationPitch / (180f / (float)Math.PI);
 		sqHead.rotateAngleY = playerHead.rotateAngleY = playerHeadwear.rotateAngleY = rotationYaw / (180f / (float)Math.PI);
-		sqLegL.rotateAngleY = 0.7859382f;
-		sqLegR.rotateAngleY = -0.7859382f;
-		sqLegL1.rotateAngleY = 0.3926991f;
-		sqLegR1.rotateAngleY = -0.3926991f;
-		sqLegL2.rotateAngleY = -0.3926991f;
-		sqLegR2.rotateAngleY = 0.3926991f;
-		sqLegL3.rotateAngleY = -0.7859382f;
-		sqLegR3.rotateAngleY = 0.7859382f;
-		sqLegL.rotateAngleZ = 0.7859382f;
-		sqLegR.rotateAngleZ = -0.7859382f;
-		sqLegL1.rotateAngleZ = 0.5811946f;
-		sqLegR1.rotateAngleZ = -0.5811946f;
-		sqLegL2.rotateAngleZ = 0.5811946f;
-		sqLegR2.rotateAngleZ = -0.5811946f;
-		sqLegL3.rotateAngleZ = 0.7859382f;
-		sqLegR3.rotateAngleZ = -0.7859382f;
-		sqArmL.rotateAngleX = playerArmL.rotateAngleX = MathHelper.cos(limbSwing * 0.6662f + (float)Math.PI) * 2f * limbSwingAmount * 0.5f;
-		sqArmR.rotateAngleX = playerArmR.rotateAngleX = MathHelper.cos(limbSwing * 0.6662f) * 2f * limbSwingAmount * 0.5f;
+		float legAngleY = (float)Math.PI / 8, legAngleZ = (float)Math.PI / 4;
+		sqLegL.rotateAngleY = legAngleY * 2f;
+		sqLegR.rotateAngleY = -legAngleY * 2f;
+		sqLegL1.rotateAngleY = legAngleY;
+		sqLegR1.rotateAngleY = -legAngleY;
+		sqLegL2.rotateAngleY = -legAngleY;
+		sqLegR2.rotateAngleY = legAngleY;
+		sqLegL3.rotateAngleY = -legAngleY * 2f;
+		sqLegR3.rotateAngleY = legAngleY * 2f;
+		sqLegL.rotateAngleZ = legAngleZ;
+		sqLegR.rotateAngleZ = -legAngleZ;
+		sqLegL1.rotateAngleZ = legAngleZ * 0.74f;
+		sqLegR1.rotateAngleZ = -legAngleZ * 0.74f;
+		sqLegL2.rotateAngleZ = legAngleZ * 0.74f;
+		sqLegR2.rotateAngleZ = -legAngleZ * 0.74f;
+		sqLegL3.rotateAngleZ = legAngleZ;
+		sqLegR3.rotateAngleZ = -legAngleZ;
+		sqArmR.rotateAngleX = playerArmR.rotateAngleX = MathHelper.cos(limbSwing * 0.6662f + (float)Math.PI) * 2f * limbSwingAmount * 0.5f;
+		sqArmL.rotateAngleX = playerArmL.rotateAngleX = MathHelper.cos(limbSwing * 0.6662f) * 2f * limbSwingAmount * 0.5f;
+		sqArmL.rotateAngleZ = playerArmL.rotateAngleZ = 0f;
+		sqArmR.rotateAngleZ = playerArmR.rotateAngleZ = 0f;
 		if(isRiding){
-			sqArmL.rotateAngleX = playerArmL.rotateAngleX -= 0.6283185f;
-			sqArmR.rotateAngleX = playerArmR.rotateAngleX -= 0.6283185f;
+			float ridingOffset = -(float)Math.PI / 5f;
+			sqArmL.rotateAngleX = playerArmL.rotateAngleX += ridingOffset;
+			sqArmR.rotateAngleX = playerArmR.rotateAngleX += ridingOffset;
 		}
+		if(heldItemLeft != 0) sqArmL.rotateAngleX = playerArmL.rotateAngleX = sqArmL.rotateAngleX * 0.5f - ((float)Math.PI / 10f) * (float)heldItemRight;
+		if(heldItemRight != 0) sqArmR.rotateAngleX = playerArmR.rotateAngleX = sqArmR.rotateAngleX * 0.5f - ((float)Math.PI / 10f) * (float)heldItemRight;
+		sqArmL.rotateAngleY = playerArmL.rotateAngleY = 0f;
+		sqArmR.rotateAngleY = playerArmR.rotateAngleY = 0f;
 		if(onGround > -9990f){
-
+			float ground = onGround;
+			sqTorso.rotateAngleY = playerTorso.rotateAngleY = MathHelper.sin(MathHelper.sqrt_float(ground) * 3.141593F * 2.0F) * 0.2F;
+			sqArmR.rotationPointZ = playerArmR.rotationPointZ = MathHelper.sin(getTorso().rotateAngleY) * 4F - 3F;
+			sqArmR.rotationPointX = playerArmR.rotationPointX = -MathHelper.cos(getTorso().rotateAngleY) * 4F;
+			sqArmL.rotationPointZ = playerArmL.rotationPointZ = -MathHelper.sin(getTorso().rotateAngleY) * 4F - 3F;
+			sqArmL.rotationPointX = playerArmL.rotationPointX = MathHelper.cos(getTorso().rotateAngleY) * 4F;
+			playerArmR.rotateAngleY = sqArmR.rotateAngleY += getTorso().rotateAngleY;
+			playerArmL.rotateAngleY = sqArmL.rotateAngleY += getTorso().rotateAngleY;
+			playerArmL.rotateAngleX = sqArmL.rotateAngleX += getTorso().rotateAngleY;
+			ground = 1.0F - onGround;
+			ground *= ground;
+			ground *= ground;
+			ground = 1.0F - ground;
+			final float ff7 = MathHelper.sin(ground * (float)Math.PI);
+			final float ff8 = MathHelper.sin(onGround * (float)Math.PI) * -(sqHead.rotateAngleX - 0.7f) * 0.75f;
+			playerArmR.rotateAngleX = sqArmR.rotateAngleX -= ff7 * 1.2d + ff8;
+			playerArmR.rotateAngleY = sqArmR.rotateAngleY += getTorso().rotateAngleY * 2.0f;
+			playerArmR.rotateAngleZ = sqArmR.rotateAngleZ = MathHelper.sin(onGround * (float)Math.PI) * -0.4f;
 		}
+		float armAngleOffsetX = MathHelper.sin(limbSwingAmount * 0.067f) * 0.05f, armAngleOffsetZ = MathHelper.cos(limbSwingAmount * 0.09f) * 0.05f + 0.05f;
+		sqArmL.rotateAngleX = playerArmL.rotateAngleX -= armAngleOffsetX;
+		sqArmR.rotateAngleX = playerArmR.rotateAngleX += armAngleOffsetX;
+		sqArmL.rotateAngleZ = playerArmL.rotateAngleZ -= armAngleOffsetZ;
+		sqArmR.rotateAngleZ = playerArmR.rotateAngleZ += armAngleOffsetZ;
 		if(aimedBow){
-
+			sqArmL.rotateAngleX = playerArmL.rotateAngleX = -((float)Math.PI * 0.5f) + sqHead.rotateAngleX;
+			sqArmR.rotateAngleX = playerArmR.rotateAngleX = -((float)Math.PI * 0.5f) + sqHead.rotateAngleX;
+			sqArmL.rotateAngleY = playerArmL.rotateAngleY = 0.1f * 0.6f + sqHead.rotateAngleY + 0.4f;
+			sqArmR.rotateAngleY = playerArmR.rotateAngleY = -(0.1f * 0.6f) + sqHead.rotateAngleY;
+			sqArmL.rotateAngleZ = playerArmL.rotateAngleZ = 0f;
+			sqArmR.rotateAngleZ = playerArmR.rotateAngleZ = 0f;
+			sqArmL.rotateAngleX = playerArmL.rotateAngleX -= 0f * 1.2f * 0f * 0.4f;
+			sqArmR.rotateAngleX = playerArmR.rotateAngleX -= 0f * 1.2f * 0f * 0.4f;
+			sqArmL.rotateAngleZ = playerArmL.rotateAngleZ -= MathHelper.cos(limbSwingAmount * 0.09f) * 0.05f + 0.05f;
+			sqArmR.rotateAngleZ = playerArmR.rotateAngleZ += MathHelper.cos(limbSwingAmount * 0.09f) * 0.05f + 0.05f;
+			sqArmL.rotateAngleX = playerArmL.rotateAngleX -= MathHelper.sin(limbSwingAmount * 0.067f) * 0.05f;
+			sqArmR.rotateAngleX = playerArmR.rotateAngleX += MathHelper.sin(limbSwingAmount * 0.067f) * 0.05f;
 		}
 		float backLegsY = -(MathHelper.cos(limbSwing * 0.6662f * 2f) * 0.4f) * limbSwingAmount;
 		float midBackLegsY = -(MathHelper.cos(limbSwing * 0.6662f * 2f + (float)Math.PI) * 0.4f) * limbSwingAmount;
-		float midFrontLegsY = -(MathHelper.cos(limbSwing * 0.6662f * 2f + ((float)Math.PI / 2f)) * 0.4f) * limbSwingAmount;
+		float midFrontLegsY = -(MathHelper.cos(limbSwing * 0.6662f * 2f + ((float)Math.PI * 0.5f)) * 0.4f) * limbSwingAmount;
 		float frontLegsY = -(MathHelper.cos(limbSwing * 0.6662f * 2f + ((float)Math.PI * 1.5f)) * 0.4f) * limbSwingAmount;
 		float backLegsZ = Math.abs(MathHelper.sin(limbSwing * 0.6662f) * 0.4f) * limbSwingAmount;
 		float midBackLegsZ = Math.abs(MathHelper.sin(limbSwing * 0.6662f + (float)Math.PI) * 0.4f) * limbSwingAmount;
-		float midFrontLegsZ = Math.abs(MathHelper.sin(limbSwing * 0.6662f + ((float)Math.PI / 2f)) * 0.4f) * limbSwingAmount;
+		float midFrontLegsZ = Math.abs(MathHelper.sin(limbSwing * 0.6662f + ((float)Math.PI * 0.5f)) * 0.4f) * limbSwingAmount;
 		float frontLegsZ = Math.abs(MathHelper.sin(limbSwing * 0.6662f + ((float)Math.PI * 1.5f)) * 0.4f) * limbSwingAmount;
-		sqLegL.rotateAngleY -= frontLegsY;
+		sqLegL.rotateAngleY += -frontLegsY;
 		sqLegR.rotateAngleY += frontLegsY;
-		sqLegL1.rotateAngleY -= midFrontLegsY;
+		sqLegL1.rotateAngleY += -midFrontLegsY;
 		sqLegR1.rotateAngleY += midFrontLegsY;
-		sqLegL2.rotateAngleY -= midBackLegsY;
+		sqLegL2.rotateAngleY += -midBackLegsY;
 		sqLegR2.rotateAngleY += midBackLegsY;
-		sqLegL3.rotateAngleY -= backLegsY;
+		sqLegL3.rotateAngleY += -backLegsY;
 		sqLegR3.rotateAngleY += backLegsY;
-		sqLegL.rotateAngleZ -= frontLegsZ;
+		sqLegL.rotateAngleZ += -frontLegsZ;
 		sqLegR.rotateAngleZ += frontLegsZ;
-		sqLegL1.rotateAngleZ -= midFrontLegsZ;
+		sqLegL1.rotateAngleZ += -midFrontLegsZ;
 		sqLegR1.rotateAngleZ += midFrontLegsZ;
-		sqLegL2.rotateAngleZ -= midBackLegsZ;
+		sqLegL2.rotateAngleZ += -midBackLegsZ;
 		sqLegR2.rotateAngleZ += midBackLegsZ;
-		sqLegL3.rotateAngleZ -= backLegsZ;
+		sqLegL3.rotateAngleZ += -backLegsZ;
 		sqLegR3.rotateAngleZ += backLegsZ;
 	}
-
-	public ModelRenderer getPlayerHead(){ return playerHead; }
-
-	public ModelRenderer getRightArm(){ return SpiderCore.getConfig().useSpiderQueenModel? sqArmR: playerArmR; }
 
 	public void render(Entity entity, float limbSwing, float limbSwingAmount, float time, float rotationYaw, float rotationPitch, float partialTicks){
 		setRotationAngles(limbSwing, limbSwingAmount, time, rotationYaw, rotationPitch, partialTicks);
