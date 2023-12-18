@@ -1,6 +1,5 @@
 package com.sulvic.sqfixer.client;
 
-
 import static com.sulvic.sqfixer.SpiderQueenFixer.*;
 
 import java.io.File;
@@ -17,7 +16,7 @@ public class SpiderFixerConfig extends Configuration{
 
 	public static final String FIXER_CATEGORY_BASE = "sqfixer";
 	private String[] moreBedLogs;
-	private boolean addFixerCreator, allowCreativeString;
+	private boolean addFixerCreator, allowCreativeString, useFixerAntModel, useFixerCocoonModel, useFixerHumanModel, useFixerQueenModel;
 	private double maxLabelDistance, maxCropFriendlyDist;
 	private int pickupDelay;
 
@@ -29,6 +28,14 @@ public class SpiderFixerConfig extends Configuration{
 
 	public boolean allowCreativeString(){ return allowCreativeString; }
 
+	public boolean useFixerAntModel(){ return useFixerAntModel; }
+
+	public boolean useFixerCocoonModel(){ return useFixerCocoonModel; }
+
+	public boolean useFixerHumanModel(){ return useFixerHumanModel; }
+
+	public boolean useFixerQueenModel(){ return useFixerQueenModel; }
+
 	public int getPickupDelay(){ return pickupDelay; }
 
 	public double getMaxCropFriendlyDistance(){ return maxCropFriendlyDist; }
@@ -38,6 +45,11 @@ public class SpiderFixerConfig extends Configuration{
 	public void build(){
 		try{
 			load();
+			useFixerAntModel = getBoolean("useFixerAntModel", FIXER_CATEGORY_BASE + ".render", false, "Switches the Ant models for the fixer model.", "sqfixer.config.useFixerAntModel");
+			useFixerCocoonModel = getBoolean("useFixerCocoonModel", FIXER_CATEGORY_BASE + ".render", false, "Switches the Cocoon models for the fixer model.", "sqfixer.config.useFixerCocoonModel");
+			useFixerHumanModel = getBoolean("useFixerHumanModel", FIXER_CATEGORY_BASE + ".render", false, "Switches the Human models for the fixer model.",
+				"sqfixer.config.useFixerHumanModel");
+			useFixerQueenModel = getBoolean("useFixerQueenModel", FIXER_CATEGORY_BASE + ".render", false, "Switches the SpiderQueen models for the fixer model.", "sqfixer.config.useFixerQueenModel");
 			pickupDelay = getInt("pickupDelay", FIXER_CATEGORY_BASE + ".items", 1, 1, 20, "The cooldown time for item offerings (in seconds).", "sqfixer.config.pickupDelay") * 20;
 			addFixerCreator = getBoolean("addFixerCreator", FIXER_CATEGORY_BASE, false, "Adds Crimzega to the list of player names.", "sqfixer.config.addFixerCreator");
 			moreBedLogs = getStringList("moreBedLogs", FIXER_CATEGORY_BASE, new String[]{}, "Allows more log blocks for web beds (e.g: modid:block)", (String[])null,

@@ -51,3 +51,7 @@ sqfixer.config.waspWeightedProb=Wasp Spawn Chance
 sqfixer.config.yukiMaxCount=Yuki Max Count
 sqfixer.config.yukiMinCount=Yuki Min Count
 sqfixer.config.yukiWeightedProb=Yuki Spawn Chance
+sqfixer.config.useFixerAntModel=Use Fixed Ant Models?
+sqfixer.config.useFixerCocoonModel=Use Fixed Cocoon Models?
+sqfixer.config.useFixerHumanModel=Use Fixed Human Models?
+sqfixer.config.useFixerQueenModel=Use Fixed Queen Models?

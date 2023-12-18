@@ -13,7 +13,7 @@ public class FixerAssemModContainer extends DummyModContainer{
 
 	private static final ModMetadata FIXER_ASM_METADATA = new ModMetadata();
 	private static Configuration config;
-	protected boolean useFixerAntModel, useFixerCocoonModel, useFixerHumanModel, useFixerPlayerModel, useFixerQueenModel;
+	protected boolean useFixerPlayerModel;
 
 	static{
 		FIXER_ASM_METADATA.modId = "sqfixer_asm";
@@ -27,11 +27,7 @@ public class FixerAssemModContainer extends DummyModContainer{
 		config = new Configuration(new File(getConfigFolder(), "sq_fixup_asm.cfg"), true);
 		try{
 			config.load();
-			useFixerAntModel = config.getBoolean("useFixerAntModel", "sqfixer.render", false, "Switches the Ant models for the fixer model.");
-			useFixerCocoonModel = config.getBoolean("useFixerCocoonModel", "sqfixer.render", false, "Switches the Cocoon models for the fixer model.");
-			useFixerHumanModel = config.getBoolean("useFixerHumanModel", "sqfixer.render", false, "Switches the Human models for the fixer model.");
 			useFixerPlayerModel = config.getBoolean("useFixerPlayerModel", "sqfixer.render", false, "Switches the Player SpiderQueen models for the fixer model.");
-			useFixerQueenModel = config.getBoolean("useFixerQueenModel", "sqfixer.render", false, "Switches the SpiderQueen models for the fixer model.");
 		}
 		catch(Exception ex){}
 		finally{
@@ -40,15 +36,7 @@ public class FixerAssemModContainer extends DummyModContainer{
 		SpiderFixerPlugin.instance.container = this;
 	}
 
-	public boolean useFixerAntModel(){ return useFixerAntModel; }
-
-	public boolean useFixerCocoonModel(){ return useFixerCocoonModel; }
-
-	public boolean useFixerHumanModel(){ return useFixerHumanModel; }
-
 	public boolean useFixerPlayerModel(){ return useFixerPlayerModel; }
-
-	public boolean useFixerQueenModel(){ return useFixerQueenModel; }
 
 	private static File getConfigFolder(){ return new File(Minecraft.getMinecraft().mcDataDir, "config"); }
 

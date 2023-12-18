@@ -13,11 +13,11 @@ import sq.entity.creature.*;
 public class SpiderFixerClient extends SpiderFixerServer{
 
 	public void registerRenders(){
+		if(SpiderQueenFixer.getConfig().useFixerAntModel()) RenderingRegistry.registerEntityRenderingHandler(EntityAnt.class, new RenderRetexedAnt());
+		if(SpiderQueenFixer.getConfig().useFixerCocoonModel()) RenderingRegistry.registerEntityRenderingHandler(EntityCocoon.class, new RenderTypedCocoon());
+		if(SpiderQueenFixer.getConfig().useFixerHumanModel()) RenderingRegistry.registerEntityRenderingHandler(EntityHuman.class, new RenderHumanFix());
+		if(SpiderQueenFixer.getConfig().useFixerQueenModel()) RenderingRegistry.registerEntityRenderingHandler(EntitySpiderQueen.class, new RenderRetexedSpiderQueen());
 		FixerAssemModContainer container = SpiderFixerPlugin.instance.getContainer();
-		if(container.useFixerAntModel()) RenderingRegistry.registerEntityRenderingHandler(EntityAnt.class, new RenderRetexedAnt());
-		if(container.useFixerCocoonModel()) RenderingRegistry.registerEntityRenderingHandler(EntityCocoon.class, new RenderTypedCocoon());
-		if(container.useFixerHumanModel()) RenderingRegistry.registerEntityRenderingHandler(EntityHuman.class, new RenderHumanFix());
-		if(container.useFixerQueenModel()) RenderingRegistry.registerEntityRenderingHandler(EntitySpiderQueen.class, new RenderRetexedSpiderQueen());
 		if(SpiderCore.getConfig().useSpiderQueenModel && container.useFixerPlayerModel()){
 			SpiderQueenFixer.getLogger().info("Attempting to apply custom Spider Queen player renderer.");
 			RenderingRegistry.registerEntityRenderingHandler(EntityPlayer.class, new RenderRetexedPlayerQueen());

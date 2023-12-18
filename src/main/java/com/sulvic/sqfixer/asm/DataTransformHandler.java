@@ -32,7 +32,7 @@ public class DataTransformHandler implements IClassTransformer{
 				return patchClass(basicClass, SpiderQueenPatcher::patchEventsFML);
 			case "sq.core.forge.EventHooksForge":
 				FixerAssemModContainer container = SpiderFixerPlugin.instance.getContainer();
-				return container != null && container.useFixerQueenModel()? patchClass(basicClass, SpiderQueenPatcher::patchEventsForge): basicClass;
+				return container != null && container.useFixerPlayerModel()? patchClass(basicClass, SpiderQueenPatcher::patchEventsForge): basicClass;
 			case "sq.core.ReputationHandler":
 				return patchClass(basicClass, SpiderQueenPatcher::patchReputationHandler);
 			case "sq.items.ItemOffering":
