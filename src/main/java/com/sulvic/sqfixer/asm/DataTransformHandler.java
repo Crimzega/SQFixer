@@ -2,6 +2,7 @@ package com.sulvic.sqfixer.asm;
 
 import static org.objectweb.asm.ClassWriter.*;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.function.Consumer;
 
 import org.objectweb.asm.*;
@@ -30,7 +31,8 @@ public class DataTransformHandler implements IClassTransformer{
 			case "sq.core.forge.EventHooksFML":
 				return patchClass(basicClass, SpiderQueenPatcher::patchEventsFML);
 			case "sq.core.forge.EventHooksForge":
-				return patchClass(basicClass, SpiderQueenPatcher::patchEventsForge);
+				FixerAssemModContainer container = SpiderFixerPlugin.instance.getContainer();
+				return container != null && container.useFixerQueenModel()? patchClass(basicClass, SpiderQueenPatcher::patchEventsForge): basicClass;
 			case "sq.core.ReputationHandler":
 				return patchClass(basicClass, SpiderQueenPatcher::patchReputationHandler);
 			case "sq.items.ItemOffering":

@@ -7,6 +7,7 @@ import java.util.Arrays;
 import org.apache.logging.log4j.*;
 
 import com.sulvic.sqfixer.asm.FixerHandlers;
+import com.sulvic.sqfixer.asm.SpiderFixerPlugin;
 import com.sulvic.sqfixer.client.SpiderFixerConfig;
 import com.sulvic.sqfixer.common.HumanInfo;
 import com.sulvic.sqfixer.common.item.ItemSkinSwitcher;
@@ -26,7 +27,7 @@ import sq.core.minecraft.*;
 @Mod(modid = MODID, name = NAME, version = VERSION, dependencies = DEPENDENCIES, guiFactory = GUI_FACTORY)
 public class SpiderQueenFixer{
 
-	public ItemSkinSwitcher skinSwitcher;
+	public ItemSkinSwitcher skinSwitcher = new ItemSkinSwitcher();
 	@Instance(MODID)
 	public static SpiderQueenFixer instance;
 	private Logger logger;
@@ -63,9 +64,10 @@ public class SpiderQueenFixer{
 	@EventHandler
 	public void init(FMLInitializationEvent evt){
 		logger.info("This init method exists to set missing unlocalized names, apply mod blocks, increase max stacks, and use modified spawn data.");
-		skinSwitcher = new ItemSkinSwitcher();
-		GameRegistry.registerItem(skinSwitcher, "skin_switcher");
-		GameRegistry.addRecipe(new ShapedOreRecipe(skinSwitcher, new String[]{" I ", "IGI", " I "}, 'I', Items.iron_ingot, 'G', "paneGlass"));
+		if(SpiderFixerPlugin.instance.getContainer().useFixerPlayerModel()){
+			GameRegistry.registerItem(skinSwitcher, "skin_switcher");
+			GameRegistry.addRecipe(new ShapedOreRecipe(skinSwitcher, new String[]{" I ", "IGI", " I "}, 'I', Items.iron_ingot, 'G', "paneGlass"));
+		}
 		ModBlocks.webBed.setBlockName("web-bed");
 		FixerHandlers.applyNewLogs();
 		ModItems.royalBlood.setMaxStackSize(16);
