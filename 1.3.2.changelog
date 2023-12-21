@@ -2,3 +2,7 @@ The following information has been altered accordingly:
 
 - Added ASM configuration for toggling between SpiderQueen and SpiderQueenFixer player models
 - Added configuration for toggling bewteen SpiderQueen and SpiderQueenFixer ant, cocoon, human, and spiderqueen models respectively.
+
+#### Notice
+
+Editing the ASM configuration will currently require the game to restart.
