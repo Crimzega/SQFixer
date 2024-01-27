@@ -10,10 +10,7 @@ public class SpiderQueenPatcher{
 		SpiderFixerPlugin.logger.info("Patching Spider Queen's EventHooksFML.");
 		for(MethodNode methodNode: classNode.methods) switch(methodNode.name){
 			case "serverTickEventHandler":
-				for(AnnotationNode annoNode: methodNode.visibleAnnotations) if(annoNode.desc.equals("Lcpw/mods/fml/common/eventhandler/SubscribeEvent;")){
-					methodNode.visibleAnnotations.remove(annoNode);
-					break;
-				}
+				methodNode.visibleAnnotations.clear();
 			break;
 		}
 		SpiderFixerPlugin.logger.info("Patched Spider Queen's EventHooksFML.");

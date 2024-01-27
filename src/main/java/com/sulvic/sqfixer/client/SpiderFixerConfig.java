@@ -38,6 +38,12 @@ public class SpiderFixerConfig extends Configuration{
 
 	public int getPickupDelay(){ return pickupDelay; }
 
+	public int getMaxCount(Class<? extends EntityLiving> livingClass){ return SpawnConfig.CONFIG_SPAWNS.get(livingClass).getMaxCount(); }
+
+	public int getMinCount(Class<? extends EntityLiving> livingClass){ return SpawnConfig.CONFIG_SPAWNS.get(livingClass).getMinCount(); }
+
+	public int getProbability(Class<? extends EntityLiving> livingClass){ return SpawnConfig.CONFIG_SPAWNS.get(livingClass).getProbability(); }
+
 	public double getMaxCropFriendlyDistance(){ return maxCropFriendlyDist; }
 
 	public double getMaxLabelDistance(){ return maxLabelDistance; }
@@ -83,7 +89,7 @@ public class SpiderFixerConfig extends Configuration{
 
 	public static class SpawnConfig{
 
-		private static final Map<Class<? extends EntityLiving>, SpawnConfig> CONFIG_SPAWNS = Maps.newHashMap();
+		protected static final Map<Class<? extends EntityLiving>, SpawnConfig> CONFIG_SPAWNS = Maps.newHashMap();
 		private final String entityName;
 		private int maxCount, minCount, weightProb;
 
