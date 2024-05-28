@@ -59,8 +59,12 @@ public class SpiderQueenFixer{
 		config = new SpiderFixerConfig(evt);
 		config.build();
 		proxy.registerRenders();
-		SpiderCore.fakePlayerNames.addAll(HumanInfo.redownloadPlayerNames());
-		logger.info("The player names should now be applied from redirects.");
+		if(SpiderCore.fakePlayerNames.size() > 0 && SpiderCore.fakePlayerNames.get(0).equalsIgnoreCase("<html>")){
+			logger.info("Cleaning out collected redirect notices.");
+			SpiderCore.fakePlayerNames.clear();
+		}
+		SpiderCore.fakePlayerNames.addAll(HumanInfo.useLocalNames());
+		logger.info("The player names should now be applied from local assets.");
 		logger.info("Player Names: {}", Arrays.toString(SpiderCore.fakePlayerNames.toArray()));
 		HumanInfo.storeIds();
 		FMLCommonHandler.instance().bus().register(FixerEvents.getInstance());
@@ -98,6 +102,12 @@ public class SpiderQueenFixer{
 		FixerHandlers.applyNewLogs();
 		ModItems.royalBlood.setMaxStackSize(16);
 		ModItems.spiderEgg.setMaxStackSize(16);
+	}
+
+	@EventHandler
+	public void postInit(FMLPostInitializationEvent evt){
+		logger.info("This postInit method is to exclusively place the Skin Switcher item in the spider queen creative tab.");
+		skinSwitcher.setCreativeTab(SpiderCore.getCreativeTab());
 	}
 
 	@EventHandler

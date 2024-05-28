@@ -13,7 +13,6 @@ import sq.core.SpiderCore;
 public class ItemSkinSwitcher extends Item{
 
 	public ItemSkinSwitcher(){
-		setCreativeTab(SpiderCore.getCreativeTab());
 		setMaxStackSize(1);
 		setTextureName(MODID + ":skin_switcher");
 		setUnlocalizedName("skin_switcher");

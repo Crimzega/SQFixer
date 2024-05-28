@@ -15,46 +15,35 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.PropertyMap;
 import com.sulvic.sqfixer.SpiderQueenFixer;
 
+import net.minecraft.util.ResourceLocation;
 import sq.core.SpiderCore;
 
 public class HumanInfo{
 
-	private static final String PROCOTOL = "http://", SECURE_PROTOCOL = "https://", SESSION_BASE_LINK = "https://sessionserver.mojang.com/session/minecraft/profile/";
+	private static final ResourceLocation NAMES = new ResourceLocation("sqfixer", "skins"), PERM_NAMES = new ResourceLocation("sqfixer", "perm_skins");
+	private static final String SESSION_BASE_LINK = "https://sessionserver.mojang.com/session/minecraft/profile/";
 	private static final Map<String, UUID> OLD_NAME_TO_UUID = Maps.newHashMap();
 	private static final Map<UUID, GameProfile> CURRENT_PROFILE = Maps.newHashMap();
 	private static String fixerCreatorName = "Crimzega";
 	private static UUID fixerCreatorId = UUID.fromString("7db16c19-6e67-4931-afb8-78db3f640d3c");
 	private static GameProfile fixerCreatorProfile;
 
+	private static String getLocalSkinPath(ResourceLocation resLoc){ return String.format("/assets/%s/names/%s.txt", resLoc.getResourceDomain(), resLoc.getResourcePath()); }
+
+	private static InputStream getSkinNames(ResourceLocation resLoc){ return HumanInfo.class.getResourceAsStream(getLocalSkinPath(resLoc)); }
+
 	private static boolean hasProfile(String name){ return CURRENT_PROFILE.containsKey(getIdFromOldName(name)); }
-
-	private static boolean hasProtocol(String link){ return link.startsWith(PROCOTOL) || hasSecureProtocol(link); }
-
-	private static boolean hasSecureProtocol(String link){ return link.startsWith(SECURE_PROTOCOL); }
 
 	private static Logger getLogger(){ return SpiderQueenFixer.getLogger(); }
 
-	private static String sanitizeLink(String link){ return link.replaceAll("[^\\x20-\\x7E]", "."); }
-
-	private static String secureLink(String link){
-		return sanitizeLink(hasProtocol(link)? hasSecureProtocol(link)? link: link.replaceAll(PROCOTOL, SECURE_PROTOCOL): SECURE_PROTOCOL + link);
-	}
-
-	private static void collectPlayerNames(String link, List<String> list) throws IOException{
-		if(link == null || link.equals("")) throw new IllegalArgumentException("The link cannot be empty.");
-		URL url = new URL(secureLink(link));
-		HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-		conn.setInstanceFollowRedirects(true);
-		conn.connect();
-		int status = conn.getResponseCode();
-		if(status == HTTP_OK){
-			BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-			String line;
-			while((line = reader.readLine()) != null) list.add(line);
-			reader.close();
-		}
-		conn.disconnect();
-		getLogger().info("Found player names! Base Link: {}", link);
+	private static void collectPlayerNames(ResourceLocation resLoc, List<String> list) throws IOException{
+		InputStream stream = getSkinNames(resLoc);
+		if(stream == null) throw new NullPointerException("The local asset is missing.");
+		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+		String line;
+		while((line = reader.readLine()) != null) list.add(line);
+		reader.close();
+		getLogger().info("Loaded player names!");
 	}
 
 	private static void populateProfiles(){
@@ -84,16 +73,16 @@ public class HumanInfo{
 
 	public static final UUID getIdFromOldName(String name){ return OLD_NAME_TO_UUID.get(getStoredName(name)); }
 
-	public static List<String> redownloadPlayerNames(){
-		getLogger().info("Downloading names of contributors & volunteers using redirection...");
+	public static List<String> useLocalNames(){
+		getLogger().info("Using local name list of contributors & volunteers...");
 		List<String> result = Lists.newArrayList();
 		try{
-			collectPlayerNames(SpiderCore.PERM_SKINS_URL, result);
-			collectPlayerNames(SpiderCore.SKINS_URL, result);
-			getLogger().info("Names of contributors and volunteers downloaded successfully!");
+			collectPlayerNames(PERM_NAMES, result);
+			collectPlayerNames(NAMES, result);
+			getLogger().info("Names of contributors and volunteers loaded successfully!");
 		}
 		catch(IOException ex){
-			getLogger().error("Unable to to get player names.");
+			getLogger().error("Unable to get player names.");
 			getLogger().catching(ex);
 		}
 		return result;
