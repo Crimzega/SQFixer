@@ -1,7 +1,7 @@
 The following information has been altered accordingly:
 
 - Added a post initialization event to exclusively add the Skin Switcher item to Spider Queen creative tab
-- Preemptively remove player names if filled with online redirection content
+- Preemptively remove player names if filled with online redirection html content
 - Downloaded online list of contributors & volunteers into local assets
 - Using local contributors & volunteers instead of needing an internet connection
 - Removed the SQFixer API as this mod is made to fix issues first and foremost
