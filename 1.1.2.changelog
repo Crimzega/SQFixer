@@ -1,0 +1,6 @@
+The following information has been altered accordingly:
+
+- The skull, heart, and brains now have a cool down feature of one second before another can be picked from a stack of dropped items.
+- The entities reputation will no longer crash the game due to the like data not being found
+
+Removed the 1.1 version of the mod due to an oversight of how coremods work.
