@@ -16,7 +16,7 @@ public class SpiderFixerConfig extends Configuration{
 
 	public static final String FIXER_CATEGORY_BASE = "sqfixer";
 	private String[] moreBedLogs;
-	private boolean addFixerCreator, allowCreativeString, useFixerAntModel, useFixerCocoonModel, useFixerHumanModel, useFixerQueenModel;
+	private boolean addFixerCreator, allowCreativeString, useFixerAntModel, useFixerCocoonModel, useFixerHumanModel, useFixerQueenModel, useLocalNames;
 	private double maxLabelDistance, maxCropFriendlyDist;
 	private int pickupDelay;
 
@@ -35,6 +35,8 @@ public class SpiderFixerConfig extends Configuration{
 	public boolean useFixerHumanModel(){ return useFixerHumanModel; }
 
 	public boolean useFixerQueenModel(){ return useFixerQueenModel; }
+
+	public boolean useLocalNames(){ return useLocalNames; }
 
 	public int getPickupDelay(){ return pickupDelay; }
 
@@ -58,6 +60,7 @@ public class SpiderFixerConfig extends Configuration{
 			useFixerQueenModel = getBoolean("useFixerQueenModel", FIXER_CATEGORY_BASE + ".render", false, "Switches the SpiderQueen models for the fixer model.", "sqfixer.config.useFixerQueenModel");
 			pickupDelay = getInt("pickupDelay", FIXER_CATEGORY_BASE + ".items", 1, 1, 20, "The cooldown time for item offerings (in seconds).", "sqfixer.config.pickupDelay") * 20;
 			addFixerCreator = getBoolean("addFixerCreator", FIXER_CATEGORY_BASE, false, "Adds Crimzega to the list of player names.", "sqfixer.config.addFixerCreator");
+			useLocalNames = getBoolean("useLocalNames", FIXER_CATEGORY_BASE, false, "Uses the local names instead of grabbing from the internet", "sqfixer.config.useLocalNames");
 			moreBedLogs = getStringList("moreBedLogs", FIXER_CATEGORY_BASE, new String[]{}, "Allows more log blocks for web beds (e.g: modid:block)", (String[])null,
 				"sqfixer.config.moreBedLogs");
 			getLogger().info("Block collection attempt: {}", Arrays.toString(moreBedLogs));

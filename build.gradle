@@ -21,7 +21,7 @@ apply plugin: 'forge'
 
 version = "${sqf_version}"
 group = "com.sulvic.sqfixer"
-archivesBaseName = "SQ-Fixer_${mc_version}-${sqf_version}"
+archivesBaseName = "SQ-Fixer_${mc_version}"
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = 1.8
 

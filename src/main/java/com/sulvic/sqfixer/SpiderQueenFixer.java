@@ -59,11 +59,13 @@ public class SpiderQueenFixer{
 		config = new SpiderFixerConfig(evt);
 		config.build();
 		proxy.registerRenders();
-		if(SpiderCore.fakePlayerNames.size() > 0 && SpiderCore.fakePlayerNames.get(0).equalsIgnoreCase("<html>")){
-			logger.info("Cleaning out collected redirect notices.");
-			SpiderCore.fakePlayerNames.clear();
+		if(config.useLocalNames()){
+			if(SpiderCore.fakePlayerNames.size() > 0){
+				logger.info("Cleaning out any collected names.");
+				SpiderCore.fakePlayerNames.clear();
+			}
+			SpiderCore.fakePlayerNames.addAll(HumanInfo.useLocalNames());
 		}
-		SpiderCore.fakePlayerNames.addAll(HumanInfo.useLocalNames());
 		logger.info("The player names should now be applied from local assets.");
 		logger.info("Player Names: {}", Arrays.toString(SpiderCore.fakePlayerNames.toArray()));
 		HumanInfo.storeIds();
@@ -89,7 +91,7 @@ public class SpiderQueenFixer{
 				if(!ownSpawnSystem) EntityRegistry.removeSpawn(livingClass, type, biomes);
 				EntityRegistry.addSpawn(livingClass, config.getProbability(livingClass), config.getMinCount(livingClass), config.getMaxCount(livingClass), type, biomes);
 			}
-			
+
 		}
 		catch(NoSuchFieldException | IllegalAccessException | SecurityException ex){
 			logger.catching(ex);
