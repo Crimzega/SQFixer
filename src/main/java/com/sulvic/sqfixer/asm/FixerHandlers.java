@@ -52,16 +52,6 @@ public class FixerHandlers{
 		}
 	}
 
-	public static void updateMandragoraTick(World world, int x, int y, int z, Random random){
-		if(world.getBlockMetadata(x, y, z) >= 7){
-			world.setBlockToAir(x, y, z);
-			EntityPlayer player = world.getClosestPlayer((double)x + 0.5d, (double)y, (double)z + 0.5d, getConfig().getMaxCropFriendlyDistance());
-			EntityMandragora mandragora = player != null? new EntityFriendlyMandragora(world, player): new EntityMandragora(world);
-			mandragora.setPosition((double)x + 0.5d, (double)y, (double)z + 0.5d);
-			world.spawnEntityInWorld(mandragora);
-		}
-	}
-
 	public static ItemStack getEntityPickedResult(EntityLiving living){
 		if(living instanceof EntityAnt) return new ItemStack(ModItems.eggAntBlack);
 		else if(living instanceof EntityBee) return new ItemStack(living instanceof IFriendlyEntity? ModItems.eggFriendlyBee: ModItems.eggBee);
@@ -157,20 +147,6 @@ public class FixerHandlers{
 		}
 	}
 
-	public static void onReputationChange(EntityPlayer player, EntityLivingBase livingBase, int amount){
-		PlayerData playerData = SpiderCore.getPlayerData(player);
-		RepEntityExtension repExtension = (RepEntityExtension)livingBase.getExtendedProperties("SpiderQueenRepEntityExtension");
-		WatchedInt likeData = null;
-		if(repExtension != null) likeData = ReputationContainer.getLikeDataByClass(livingBase.getClass(), playerData);
-		else if(livingBase instanceof IRep) ((IRep)livingBase).getLikeData(playerData);
-		if(likeData != null){
-			int oldRep = likeData.getInt(), newRep = oldRep + 1;
-			likeData.setValue(newRep);
-			if(amount > 0) execRepChangeHandler("handlePositiveRepChange", player, livingBase, oldRep, newRep);
-			else if(amount < 0) execRepChangeHandler("handleNegativeRepChange", player, livingBase, oldRep, newRep);
-		}
-	}
-
 	public static void checkForBed(BlockWebFull webBlock, World world, int x, int y, int z, int itr){
 		switch(webBlock.getWebType()){
 			case NORMAL:
@@ -186,6 +162,30 @@ public class FixerHandlers{
 			break;
 			default:
 			break;
+		}
+	}
+
+	public static void onReputationChange(EntityPlayer player, EntityLivingBase livingBase, int amount){
+		PlayerData playerData = SpiderCore.getPlayerData(player);
+		RepEntityExtension repExtension = (RepEntityExtension)livingBase.getExtendedProperties("SpiderQueenRepEntityExtension");
+		WatchedInt likeData = null;
+		if(repExtension != null) likeData = ReputationContainer.getLikeDataByClass(livingBase.getClass(), playerData);
+		else if(livingBase instanceof IRep) ((IRep)livingBase).getLikeData(playerData);
+		if(likeData != null){
+			int oldRep = likeData.getInt(), newRep = oldRep + 1;
+			likeData.setValue(newRep);
+			if(amount > 0) execRepChangeHandler("handlePositiveRepChange", player, livingBase, oldRep, newRep);
+			else if(amount < 0) execRepChangeHandler("handleNegativeRepChange", player, livingBase, oldRep, newRep);
+		}
+	}
+
+	public static void updateMandragoraTick(World world, int x, int y, int z, Random random){
+		if(world.getBlockMetadata(x, y, z) >= 7){
+			world.setBlockToAir(x, y, z);
+			EntityPlayer player = world.getClosestPlayer((double)x + 0.5d, (double)y, (double)z + 0.5d, getConfig().getMaxCropFriendlyDistance());
+			EntityMandragora mandragora = player != null? new EntityFriendlyMandragora(world, player): new EntityMandragora(world);
+			mandragora.setPosition((double)x + 0.5d, (double)y, (double)z + 0.5d);
+			world.spawnEntityInWorld(mandragora);
 		}
 	}
 

@@ -90,7 +90,7 @@ public class SpiderQueenPatcher{
 				insnList.add(new VarInsnNode(ILOAD, 3));
 				insnList.add(new VarInsnNode(ILOAD, 4));
 				insnList.add(new VarInsnNode(ALOAD, 5));
-				insnList.add(new MethodInsnNode(INVOKESTATIC, "com/sulvic/sqfixer/EventHandlers", "updateMandragoraTick", methodNode.desc, false));
+				insnList.add(new MethodInsnNode(INVOKESTATIC, "com/sulvic/sqfixer/asm/FixerHandlers", "updateMandragoraTick", methodNode.desc, false));
 				insnList.add(new LabelNode());
 				insnList.add(new InsnNode(RETURN));
 				methodNode.instructions.add(insnList);
