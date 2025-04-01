@@ -17,20 +17,26 @@ buildscript {
 	}
 }
 
+plugins {
+	id 'java-library'
+	id 'maven-publish'
+}
+
 apply plugin: 'forge'
 
-version = "${sqf_version}"
-group = "com.sulvic.sqfixer"
-archivesBaseName = "SQ-Fixer_${mc_version}"
-
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = 1.8
+sourceCompatibility = compileJava.sourceCompatibility = 1.8
+targetCompatibility = compileJava.targetCompatibility = 1.8
 
 repositories {
 	maven {
 		name = 'ChickenBones'
-		url = 'http://chickenbones.net/maven/'
+		url = 'https://chickenbones.net/maven/'
 	}
 }
+
+version = "${sqf_version}"
+group = "com.sulvic.sqfixer"
+archivesBaseName = "SQ-Fixer_${mc_version}"
 
 minecraft {
 	version = "1.7.10-10.13.4.1614-1.7.10"
@@ -38,10 +44,10 @@ minecraft {
 }
 
 dependencies {
-	compile "codechicken:CodeChickenLib:${mc_version}-${cclib_version}:dev"
-	compile "codechicken:CodeChickenCore:${mc_version}-${cccore_version}:dev"
-	compile "codechicken:NotEnoughItems:${mc_version}-${nei_version}:dev"
-	compile fileTree(dir: 'libs', include: ['*.jar'])
+	implementation "codechicken:CodeChickenLib:${mc_version}-${cclib_version}:dev"
+	implementation "codechicken:CodeChickenCore:${mc_version}-${cccore_version}:dev"
+	implementation "codechicken:NotEnoughItems:${mc_version}-${nei_version}:dev"
+	implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
 
 processResources {
@@ -56,11 +62,13 @@ processResources {
 	}
 }
 
+tasks.withType(JavaCompile) {
+	options.encoding = "windows-1252"
+}
+
 jar {
 	manifest {
 		attributes 'FMLCorePlugin': 'com.sulvic.sqfixer.asm.SpiderFixerPlugin'
 		attributes 'FMLCorePluginContainsFMLMod': 'true'
 	}
 }
-
-
